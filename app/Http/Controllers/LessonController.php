@@ -6,6 +6,7 @@ use App\Models\Chapter;
 use App\Models\Lesson;
 
 use Illuminate\Http\Request;
+use League\CommonMark\MarkdownConverter;
 
 
 class LessonController extends Controller
@@ -20,7 +21,9 @@ class LessonController extends Controller
     public function show(Chapter $chapter, Lesson $lesson)
     {
         abort_unless($lesson->chapter_id === $chapter->id, 404);
-        return view('lessons.show', compact('chapter','lesson'));
+        $converter = new MarkdownConverter(); // CommonMark + basic inline HTML off by default
+        $html = $converter->convert((string) $lesson->body)->getContent();
+        return view('lessons.show', compact('chapter','lesson','html'));
     }
 
 }

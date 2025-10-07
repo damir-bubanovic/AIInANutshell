@@ -35,9 +35,35 @@
       @error('summary')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
     </div>
 
-    <div>
-      <label class="block text-sm">Body</label>
-      <textarea class="mt-1 w-full rounded-md border-gray-300" name="body" rows="10">{{ old('body',$lesson->body) }}</textarea>
+    {{-- Markdown editor with preview --}}
+    <div x-data="markdownEditor()" class="grid gap-2">
+      <label class="block text-sm">Body (Markdown)</label>
+
+      <div class="flex flex-wrap gap-2">
+        <button type="button" class="badge" @click="wrap('**','**')">Bold</button>
+        <button type="button" class="badge" @click="wrap('_','_')">Italic</button>
+        <button type="button" class="badge" @click="prefix('# ')">H1</button>
+        <button type="button" class="badge" @click="prefix('## ')">H2</button>
+        <button type="button" class="badge" @click="prefix('- ')">List</button>
+        <button type="button" class="badge" @click="wrap('`','`')">Code</button>
+        <button type="button" class="badge" @click="wrap('```\\n','\\n```')">Code block</button>
+        <button type="button" class="badge" @click="tab='edit'">Edit</button>
+        <button type="button" class="badge" @click="tab='preview'; render()">Preview</button>
+      </div>
+
+      <template x-if="tab==='edit'">
+        <textarea
+          x-ref="ta"
+          class="mt-1 w-full rounded-md border-gray-300 min-h-[350px]"
+          name="body"
+          x-model="text"
+        >{{ old('body',$lesson->body) }}</textarea>
+      </template>
+
+      <template x-if="tab==='preview'">
+        <div class="card prose max-w-none" x-html="html"></div>
+      </template>
+
       @error('body')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
     </div>
 
@@ -62,3 +88,33 @@
     <div><button class="badge">Save</button></div>
   </form>
 @endsection
+
+@push('scripts')
+<script type="module">
+  import { marked } from '/node_modules/marked/lib/marked.esm.js';
+  import DOMPurify from '/node_modules/dompurify/dist/purify.es.js';
+
+  window.markdownEditor = () => ({
+    tab: 'edit',
+    text: @json(old('body', $lesson->body)),
+    html: '',
+    render() { this.html = DOMPurify.sanitize(marked.parse(this.text || '')); },
+    wrap(before, after) {
+      const ta = this.$refs.ta;
+      const [start,end] = [ta.selectionStart, ta.selectionEnd];
+      const v = this.text || '';
+      this.text = v.slice(0,start) + before + v.slice(start,end) + after + v.slice(end);
+      this.$nextTick(()=>{ ta.focus(); ta.setSelectionRange(start+before.length, end+before.length); });
+    },
+    prefix(token) {
+      const ta = this.$refs.ta;
+      const v = this.text || '';
+      const [start,end] = [ta.selectionStart, ta.selectionEnd];
+      const pre = v.slice(0,start), mid = v.slice(start,end), post = v.slice(end);
+      const lines = mid.split('\n').map(l => l.startsWith(token)? l : token + l).join('\n');
+      this.text = pre + lines + post;
+      this.$nextTick(()=> ta.focus());
+    }
+  });
+</script>
+@endpush

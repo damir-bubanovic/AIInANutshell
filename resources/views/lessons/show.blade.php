@@ -9,7 +9,18 @@
             @if($lesson->summary)
                 <p><em>{{ $lesson->summary }}</em></p>
             @endif
-            {!! nl2br(e($lesson->body)) !!}
+
+            {{-- $html is Markdown-rendered content from controller. Fallback to escaped text. --}}
+            {!! $html ?? nl2br(e($lesson->body)) !!}
         </article>
+
+        <div class="mt-6 text-xs text-gray-500">
+            @if($lesson->published_at)
+                <span>Published {{ $lesson->published_at->toDayDateTimeString() }}</span>
+            @else
+                <span>Draft</span>
+            @endif
+            · <span>{{ $lesson->estimated_minutes }} min read</span>
+        </div>
     </div>
 </x-app-layout>
