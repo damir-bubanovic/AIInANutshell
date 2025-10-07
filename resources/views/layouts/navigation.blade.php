@@ -26,6 +26,17 @@
                 </div>
             </div>
 
+            <!-- Header Search -->
+            <form action="{{ route('search') }}" method="GET" class="hidden sm:block sm:ms-6">
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Search lessons…"
+                    class="rounded-md border-gray-300 text-sm"
+                >
+            </form>
+
             <!-- Settings -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 @auth
@@ -79,6 +90,17 @@
                 <x-responsive-nav-link :href="route('admin.chapters.index')" :active="request()->is('admin*')">{{ __('Admin') }}</x-responsive-nav-link>
             @endcan
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">{{ __('Dashboard') }}</x-responsive-nav-link>
+
+            <!-- Mobile Search -->
+            <form action="{{ route('search') }}" method="GET" class="px-4">
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Search lessons…"
+                    class="mt-2 w-full rounded-md border-gray-300 text-sm"
+                >
+            </form>
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\Admin\ChapterAdminController;
 use App\Http\Controllers\Admin\LessonAdminController;
+use App\Http\Controllers\SearchController;
 
 // Public site
 Route::get('/', [LessonController::class, 'index'])->name('home');
@@ -27,5 +28,7 @@ Route::middleware(['auth','can:admin'])->prefix('admin')->name('admin.')->group(
     Route::resource('chapters', ChapterAdminController::class)->except(['show']);
     Route::resource('lessons',  LessonAdminController::class)->except(['show']);
 });
+
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 require __DIR__.'/auth.php';
