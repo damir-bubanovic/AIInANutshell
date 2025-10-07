@@ -36,7 +36,7 @@
     </div>
 
     {{-- Markdown editor with preview --}}
-    <div x-data="markdownEditor()" class="grid gap-2">
+    <div x-data="createMarkdownEditor(@js(old('body', $lesson->body)))" class="grid gap-2">
       <label class="block text-sm">Body (Markdown)</label>
 
       <div class="flex flex-wrap gap-2">
@@ -52,12 +52,7 @@
       </div>
 
       <template x-if="tab==='edit'">
-        <textarea
-          x-ref="ta"
-          class="mt-1 w-full rounded-md border-gray-300 min-h-[350px]"
-          name="body"
-          x-model="text"
-        >{{ old('body',$lesson->body) }}</textarea>
+        <textarea x-ref="ta" class="mt-1 w-full rounded-md border-gray-300 min-h-[350px]" name="body" x-model="text"></textarea>
       </template>
 
       <template x-if="tab==='preview'">
@@ -84,37 +79,6 @@
         @error('published_at')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
       </div>
     </div>
-
     <div><button class="badge">Save</button></div>
   </form>
 @endsection
-
-@push('scripts')
-<script type="module">
-  import { marked } from '/node_modules/marked/lib/marked.esm.js';
-  import DOMPurify from '/node_modules/dompurify/dist/purify.es.js';
-
-  window.markdownEditor = () => ({
-    tab: 'edit',
-    text: @json(old('body', $lesson->body)),
-    html: '',
-    render() { this.html = DOMPurify.sanitize(marked.parse(this.text || '')); },
-    wrap(before, after) {
-      const ta = this.$refs.ta;
-      const [start,end] = [ta.selectionStart, ta.selectionEnd];
-      const v = this.text || '';
-      this.text = v.slice(0,start) + before + v.slice(start,end) + after + v.slice(end);
-      this.$nextTick(()=>{ ta.focus(); ta.setSelectionRange(start+before.length, end+before.length); });
-    },
-    prefix(token) {
-      const ta = this.$refs.ta;
-      const v = this.text || '';
-      const [start,end] = [ta.selectionStart, ta.selectionEnd];
-      const pre = v.slice(0,start), mid = v.slice(start,end), post = v.slice(end);
-      const lines = mid.split('\n').map(l => l.startsWith(token)? l : token + l).join('\n');
-      this.text = pre + lines + post;
-      this.$nextTick(()=> ta.focus());
-    }
-  });
-</script>
-@endpush
