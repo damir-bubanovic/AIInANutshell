@@ -23,6 +23,7 @@ class LessonRequest extends FormRequest
             'position' => ['required','integer','min:1'],
             'estimated_minutes' => ['required','integer','min:1','max:240'],
             'published_at' => ['nullable','date'],
+            'cover_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
         ];
     }
 }

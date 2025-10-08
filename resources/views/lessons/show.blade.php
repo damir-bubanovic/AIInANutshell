@@ -4,6 +4,14 @@
     </x-slot>
 
     <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 py-6">
+        @if($lesson->cover_image_path)
+            <img
+                src="{{ asset('storage/'.$lesson->cover_image_path) }}"
+                alt="{{ $lesson->title }}"
+                class="mb-4 w-full rounded-xl object-cover"
+            >
+        @endif
+
         <article class="prose lg:prose-lg max-w-none">
             <h1>{{ $lesson->title }}</h1>
             @if($lesson->summary)

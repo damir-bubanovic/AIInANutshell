@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin')
-  <form method="POST" class="card grid gap-4"
+  <form method="POST" enctype="multipart/form-data" class="card grid gap-4"
         action="{{ $lesson->exists ? route('admin.lessons.update', $lesson) : route('admin.lessons.store') }}">
     @csrf
     @if($lesson->exists) @method('PUT') @endif
@@ -33,6 +33,17 @@
       <label class="block text-sm">Summary</label>
       <input class="mt-1 w-full rounded-md border-gray-300" name="summary" value="{{ old('summary',$lesson->summary) }}">
       @error('summary')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
+    </div>
+
+    <div>
+      <label class="block text-sm">Cover image</label>
+      <input type="file" name="cover_image" class="mt-1 w-full rounded-md border-gray-300" accept="image/*">
+      @error('cover_image')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
+      @if($lesson->cover_image_path)
+        <div class="mt-2">
+          <img src="{{ asset('storage/'.$lesson->cover_image_path) }}" alt="cover" class="h-28 rounded-md">
+        </div>
+      @endif
     </div>
 
     {{-- Markdown editor with preview --}}
@@ -77,8 +88,13 @@
         <label class="block text-sm">Published at</label>
         <input type="datetime-local" class="mt-1 w-full rounded-md border-gray-300" name="published_at" value="{{ old('published_at', optional($lesson->published_at)->format('Y-m-d\TH:i')) }}">
         @error('published_at')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
+        <label class="mt-2 inline-flex items-center gap-2">
+          <input type="checkbox" name="publish_now" value="1" class="rounded border-gray-300" @checked(old('publish_now'))>
+          <span class="text-sm">Publish now if empty</span>
+        </label>
       </div>
     </div>
+
     <div><button class="badge">Save</button></div>
   </form>
 @endsection
