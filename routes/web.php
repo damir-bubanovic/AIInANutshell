@@ -8,9 +8,11 @@ use App\Http\Controllers\Admin\LessonAdminController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 
-// Public site
-Route::get('/', [LessonController::class, 'index'])->name('home');
-Route::get('/chapters/{chapter:slug}/{lesson:slug}', [LessonController::class, 'show'])->name('lesson.show');
+// Public site (HTTP cache 10 min)
+Route::middleware('cache.public:600')->group(function () {
+    Route::get('/', [LessonController::class, 'index'])->name('home');
+    Route::get('/chapters/{chapter:slug}/{lesson:slug}', [LessonController::class, 'show'])->name('lesson.show');
+});
 
 // Breeze default dashboard (kept)
 Route::get('/dashboard', function () { return view('dashboard'); })
@@ -32,7 +34,10 @@ Route::middleware(['auth','can:admin'])->prefix('admin')->name('admin.')->group(
 
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
-Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+// Sitemap (HTTP cache 1 hour)
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])
+    ->middleware('cache.public:3600')
+    ->name('sitemap');
 
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);

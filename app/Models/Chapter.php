@@ -11,4 +11,10 @@ class Chapter extends Model
     public function lessons() { 
         return $this->hasMany(Lesson::class)->orderBy('position'); 
     }
+
+    protected static function booted()
+    {
+        static::saved(fn() => cache()->forget('home:chapters'));
+        static::deleted(fn() => cache()->forget('home:chapters'));
+    }
 }

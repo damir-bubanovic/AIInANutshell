@@ -31,4 +31,10 @@ class Lesson extends Model
     {
         return $this->belongsTo(Chapter::class);
     }
+
+    protected static function booted()
+    {
+        static::saved(fn() => cache()->forget('home:chapters'));
+        static::deleted(fn() => cache()->forget('home:chapters'));
+    }
 }

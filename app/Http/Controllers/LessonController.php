@@ -12,11 +12,16 @@ class LessonController extends Controller
 {
     public function index()
     {
-        $chapters = Chapter::with(['lessons' => fn ($q) => $q->whereNotNull('published_at')])
+        $chapters = Cache::remember('home:chapters', 600, function () {
+        return Chapter::with(['lessons' => fn($q) => $q
+                ->whereNotNull('published_at')
+                ->orderBy('position')
+            ])
             ->orderBy('position')
             ->get();
+    });
 
-        return view('lessons.index', compact('chapters'));
+    return view('lessons.index', compact('chapters'));
     }
 
     public function show(Chapter $chapter, Lesson $lesson)
