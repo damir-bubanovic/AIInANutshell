@@ -1,3 +1,9 @@
+@php
+  $title = 'AI in a Nutshell';
+  $metaDescription = 'Practical micro-lessons.';
+@endphp
+
+
 <x-app-layout>
     <x-slot name="header">
         <h1 class="text-2xl font-semibold leading-tight text-gray-800">{{ __('AI in a Nutshell') }}</h1>

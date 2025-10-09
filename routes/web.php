@@ -6,6 +6,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\Admin\ChapterAdminController;
 use App\Http\Controllers\Admin\LessonAdminController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SitemapController;
 
 // Public site
 Route::get('/', [LessonController::class, 'index'])->name('home');
@@ -30,5 +31,7 @@ Route::middleware(['auth','can:admin'])->prefix('admin')->name('admin.')->group(
 });
 
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 require __DIR__.'/auth.php';

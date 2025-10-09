@@ -5,7 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+
+        @php
+          $appName = config('app.name', 'AI in a Nutshell');
+          $title = trim(($title ?? '') ? ($title.' | '.$appName) : $appName);
+          $desc = $metaDescription ?? 'Small lessons. Real gains.';
+          $url = rtrim(config('app.url'), '/') . request()->getPathInfo();
+          $image = $metaImage ?? null;
+        @endphp
+        <title>{{ $title }}</title>
+        <meta name="description" content="{{ $desc }}">
+
+        <link rel="canonical" href="{{ $url }}"/>
+
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ $title }}">
+        <meta property="og:description" content="{{ $desc }}">
+        @if($image)<meta property="og:image" content="{{ $image }}">@endif
+        <meta property="og:url" content="{{ $url }}">
+        <meta name="twitter:card" content="summary_large_image">
+
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

@@ -1,3 +1,11 @@
+@php
+  $title = $lesson->title;
+  $metaDescription = $lesson->summary ?? 'Lesson';
+  $metaImage = $lesson->cover_image_path ? asset('storage/'.$lesson->cover_image_path) : null;
+
+  $canonical = rtrim(config('app.url'), '/') . request()->getPathInfo();
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <a href="{{ route('home') }}" class="text-sm text-gray-600 hover:underline">← {{ __('Back') }}</a>
@@ -31,4 +39,19 @@
             · <span>{{ $lesson->estimated_minutes }} min read</span>
         </div>
     </div>
+
+    @push('scripts')
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => $lesson->title,
+        'description' => $lesson->summary ?? '',
+        'image' => $lesson->cover_image_path ? asset('storage/'.$lesson->cover_image_path) : null,
+        'datePublished' => optional($lesson->published_at)->toIso8601String(),
+        'author' => ['@type' => 'Organization', 'name' => config('app.name', 'AI in a Nutshell')],
+        'mainEntityOfPage' => $canonical,
+    ], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}
+    </script>
+    @endpush
 </x-app-layout>
