@@ -2,18 +2,33 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Lesson extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'chapter_id','slug','title','summary','body','position',
-        'estimated_minutes','published_at', 'cover_image_path',
+        'chapter_id',
+        'slug',
+        'title',
+        'summary',
+        'body',
+        'position',
+        'estimated_minutes',
+        'published_at',
+        'cover_image_path',
+        'view_count',
     ];
 
-    public function chapter() { 
-        return $this->belongsTo(Chapter::class); 
-    }
+    protected $casts = [
+        'published_at' => 'datetime',
+        'view_count'   => 'integer',
+    ];
 
-    protected $casts = ['published_at' => 'datetime'];
+    public function chapter()
+    {
+        return $this->belongsTo(Chapter::class);
+    }
 }

@@ -13,36 +13,40 @@
     @forelse($lessons as $l)
       <div class="card">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <div class="flex items-center gap-2">
-              <div class="font-semibold">{{ $l->title }}</div>
-              @if($l->published_at)
-                <span class="badge">Published</span>
-              @else
-                <span class="badge">Draft</span>
-              @endif
-            </div>
-
-            <div class="mt-1 text-xs text-gray-500">
-              Chapter: <span class="font-medium">{{ $l->chapter->title }}</span>
-              • Slug: <code>{{ $l->slug }}</code>
-              • Pos: {{ $l->position }}
-              • {{ $l->estimated_minutes }}m
-              @if($l->published_at)
-                • {{ $l->published_at->toDayDateTimeString() }}
-              @endif
-            </div>
-
-            @if($l->summary)
-              <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $l->summary }}</p>
+          <div class="flex items-start gap-3">
+            @if($l->cover_image_path)
+              <img src="{{ asset('storage/'.$l->cover_image_path) }}" alt="" class="hidden sm:block h-14 w-24 rounded object-cover">
             @endif
+            <div>
+              <div class="flex items-center gap-2">
+                <div class="font-semibold">{{ $l->title }}</div>
+                @if($l->published_at)
+                  <span class="badge">Published</span>
+                @else
+                  <span class="badge">Draft</span>
+                @endif
+              </div>
 
-            <div class="mt-2 text-xs">
-              <a class="underline text-gray-700"
-                 href="{{ route('lesson.show', [$l->chapter->slug, $l->slug]) }}"
-                 target="_blank" rel="noopener">
-                 View public page ↗
-              </a>
+              <div class="mt-1 text-xs text-gray-500">
+                Chapter: <span class="font-medium">{{ $l->chapter->title }}</span>
+                • Slug: <code>{{ $l->slug }}</code>
+                • Pos: {{ $l->position }}
+                • {{ $l->estimated_minutes }}m
+                @if($l->published_at) • {{ $l->published_at->toDayDateTimeString() }} @endif
+                • Views: {{ number_format($l->view_count) }}
+              </div>
+
+              @if($l->summary)
+                <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $l->summary }}</p>
+              @endif
+
+              <div class="mt-2 text-xs">
+                <a class="underline text-gray-700"
+                   href="{{ route('lesson.show', [$l->chapter->slug, $l->slug]) }}"
+                   target="_blank" rel="noopener">
+                   View public page ↗
+                </a>
+              </div>
             </div>
           </div>
 

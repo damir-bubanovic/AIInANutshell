@@ -11,7 +11,12 @@ class LessonAdminController extends Controller
 {
     public function index()
     {
-        $lessons = Lesson::with('chapter')->orderBy('chapter_id')->orderBy('position')->get();
+        $lessons = Lesson::with('chapter')
+            ->orderByDesc('view_count')   // most viewed first
+            ->orderBy('chapter_id')
+            ->orderBy('position')
+            ->get();
+
         return view('admin.lessons.index', compact('lessons'));
     }
 
