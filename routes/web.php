@@ -34,4 +34,8 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
+
 require __DIR__.'/auth.php';
