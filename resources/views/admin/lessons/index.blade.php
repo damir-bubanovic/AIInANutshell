@@ -14,9 +14,14 @@
       <div class="card">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="flex items-start gap-3">
-            @if($l->cover_image_path)
-              <img src="{{ asset('storage/'.$l->cover_image_path) }}" alt="" class="hidden sm:block h-14 w-24 rounded object-cover">
-            @endif
+            <div class="h-14 w-24 flex-none overflow-hidden rounded bg-gray-100 ring-1 ring-black/10">
+              <img
+                src="{{ $l->cover_image_path ? Storage::url($l->cover_image_path) : asset('images/placeholder-cover.svg') }}"
+                alt="{{ $l->title }}"
+                class="h-full w-full object-cover block"
+                loading="lazy" decoding="async"
+              >
+            </div>
             <div>
               <div class="flex items-center gap-2">
                 <div class="font-semibold">{{ $l->title }}</div>

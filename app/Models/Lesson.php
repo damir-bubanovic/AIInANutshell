@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Lesson extends Model
 {
@@ -36,5 +37,13 @@ class Lesson extends Model
     {
         static::saved(fn() => cache()->forget('home:chapters'));
         static::deleted(fn() => cache()->forget('home:chapters'));
+    }
+
+    // Image URL accessor
+    public function getImageUrlAttribute(): string
+    {
+        return $this->cover_image_path
+            ? Storage::url($this->cover_image_path)
+            : asset('images/placeholder-cover.svg');
     }
 }
